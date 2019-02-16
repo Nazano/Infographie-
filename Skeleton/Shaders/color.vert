@@ -1,10 +1,10 @@
-#version 130
+#version 330
 precision mediump float;
 
-attribute vec3 vPosition; //Depending who compiles, these variables are not "attribute" but "in". In this version (130) both are accepted. in should be used later
-attribute vec3 vColor;
+in vec3 vPosition; //Depending who compiles, these variables are not "attribute" but "in". In this version (130) both are accepted. in should be used later
+in vec3 vColor;
 
-varying vec4 varyColor; //Depending who compiles, these variables are not "varying" but "out". In this version (130) both are accepted. out should be used later
+out vec4 varyColor; //Depending who compiles, these variables are not "varying" but "out". In this version (130) both are accepted. out should be used later
 
 uniform float uScale;
 uniform mat4 MVP;
