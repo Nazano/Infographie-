@@ -12,6 +12,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Shader.h"
+#include "Cube.h"
+#include "Camera.h"
 
 #include "logger.h"
 
@@ -65,6 +67,10 @@ int main(int argc, char *argv[])
     //From here you can load your OpenGL objects, like VBO, Shaders, etc.
     //TODO
 
+	auto c = Cube();
+	c.init();
+	auto cam = Camera(c.getShader()->getProgramID());
+
     bool isOpened = true;
 
     //Main application loop
@@ -102,8 +108,8 @@ int main(int argc, char *argv[])
 
         //TODO rendering
         
-        
-        
+		c.show();
+		cam.move();
         
 
         //Display on screen (swap the buffer on screen and the buffer you are drawing on)

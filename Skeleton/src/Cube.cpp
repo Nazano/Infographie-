@@ -161,3 +161,43 @@ Cube::Cube() : Geometry()
         m_uvs[i] = uvs[i];
     m_nbVertices = 36;
 }
+
+Cube::~Cube() {
+	glUseProgram(0);
+	glDeleteBuffers(1, &buffer);
+	delete shader;
+}
+
+void Cube::init() {
+
+	//Affectation du VBO
+
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, 8 * this->getNbVertices(), this->getVertices(), GL_DYNAMIC_DRAW);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	//Chargement du shader
+
+	FILE* vertFile = fopen("bin\\Shaders\\color.vert", "r");
+	FILE* fragFile = fopen("bin\\Shaders\\color.frag", "r");
+
+	if (vertFile == NULL) { ERROR("Erreur vertex file"); }
+	if (fragFile == NULL) { ERROR("Erreur fragment file"); }
+
+	shader = Shader::loadFromFiles(vertFile, fragFile);
+
+	fclose(vertFile);
+	fclose(fragFile);
+}
+
+void Cube::show() {
+	glUseProgram(shader->getProgramID());
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	GLint v = glGetAttribLocation(shader->getProgramID(), "vPosition");
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glEnableVertexAttribArray(v);
+
+	glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
