@@ -64,33 +64,14 @@ Objloader::Objloader(char* path) {
 	}
 	//Mise en ordre
 
-	std::for_each(
-		vertexIndicies.begin(),
-		vertexIndicies.end(),
-		[vertices, vertices_tmp]
-	(int n) mutable {
+	for (auto n : vertexIndicies)
 		vertices.push_back(vertices_tmp[n - 1]);
-	});
 
-	std::for_each(
-		normalIndicies.begin(),
-		normalIndicies.end(),
-		[normals, normals_tmp]
-	(int n) mutable {
+	for (auto n : normalIndicies)
 		normals.push_back(normals_tmp[n - 1]);
-	});
 
-	std::for_each(
-		uvIndicies.begin(),
-		uvIndicies.end(),
-		[uvs, uvs_tmp]
-	(int n) mutable {
+	for (auto n : uvIndicies)
 		uvs.push_back(uvs_tmp[n - 1]);
-	});
 
-	shape = new Shape(vertices, normals, uvs);
-}
-
-Objloader::~Objloader(){
-	delete shape;
+	shape = Shape(vertices, normals, uvs);
 }

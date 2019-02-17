@@ -20,11 +20,10 @@ class Objloader
 {
 public:
 	Objloader(char*);
-	~Objloader();
-	Shape* getShape() { return shape; }
+	Shape getShape() { return shape; }
 	
 private:
-	Shape* shape;
+	Shape shape;
 };
 
 

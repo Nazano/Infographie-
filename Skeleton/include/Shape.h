@@ -22,8 +22,10 @@ public:
 	Shape(std::vector<glm::vec3>, std::vector<glm::vec3>, std::vector<glm::vec2>);
 	~Shape();
 	Shape();
+	Shape(const Shape& rhs) { vertices = rhs.vertices; normals = rhs.normals; uvs = rhs.uvs; }
 	void init();
 	void show(int);
+	
 
 	std::vector<glm::vec3> getVertcies() { return vertices; }
 	std::vector<glm::vec3> getNormals() { return normals; }

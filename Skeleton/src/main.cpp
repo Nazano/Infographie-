@@ -86,9 +86,9 @@ int main(int argc, char *argv[])
 
 	auto shader = loadShader();
 
-	Objloader obj("..\\test.obj");
-	Shape* cube = obj.getShape();
-	cube->init();
+	Objloader obj("..\\monkey.obj");
+	Shape cube = obj.getShape();
+	cube.init();
 
 	auto cam = Camera(shader->getProgramID());
 	
@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
 
 		glUseProgram(shader->getProgramID());
 
-		cube->show(shader->getProgramID());
+		cube.show(shader->getProgramID());
 		cam.move();
 
 
