@@ -44,10 +44,15 @@ elseif(MSVC)
         SET(SDL2_LIBRARY_PATH       ${CMAKE_SOURCE_DIR}/libs/VS/x64  CACHE PATH "Path to SDL2 include location")
         SET(GLEW_LIBRARY_PATH       ${CMAKE_SOURCE_DIR}/libs/VS/x64  CACHE PATH "Path to GLEW library location")
         SET(SDL2_IMAGE_LIBRARY_PATH ${CMAKE_SOURCE_DIR}/libs/VS/x64  CACHE PATH "Path to SDL2 IMAGE include location")
+		SET(SOIL2_LIBRARY_PATH ${CMAKE_SOURCE_DIR}/libs/soil2/lib CACHE PATH "Path to SOIL2 library location")
+		SET(SOIL2_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/libs/soil2/include CACHE PATH "Path to SOIL2 include location")
+
     elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
         SET(SDL2_LIBRARY_PATH       ${CMAKE_SOURCE_DIR}/libs/VS/x86  CACHE PATH "Path to SDL2 include location")
         SET(GLEW_LIBRARY_PATH       ${CMAKE_SOURCE_DIR}/libs/VS/x86  CACHE PATH "Path to GLEW library location")
         SET(SDL2_IMAGE_LIBRARY_PATH ${CMAKE_SOURCE_DIR}/libs/VS/x86  CACHE PATH "Path to SDL2 IMAGE include location")
+		SET(SOIL2_LIBRARY_PATH ${CMAKE_SOURCE_DIR}/libs/soil2/lib CACHE PATH "Path to SOIL2 library location")
+		SET(SOIL2_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/libs/soil2/include CACHE PATH "Path to SOIL2 include location")
     endif()
 
     #Linux
@@ -110,7 +115,7 @@ file(GLOB_RECURSE SRCS    src/*.cpp src/*.c)
 file(GLOB_RECURSE HEADERS include/*.h include/*.hpp)
 
 #TODO add the library path here
-link_directories(${SDL2_LIBRARY_PATH} ${GLEW_LIBRARY_PATH} ${SDL2_IMAGE_LIBRARY_PATH})
+link_directories(${SDL2_LIBRARY_PATH} ${GLEW_LIBRARY_PATH} ${SDL2_IMAGE_LIBRARY_PATH} ${SOIL2_LIBRARY_PATH})
 add_executable(Graphics_Squelette ${SRCS} ${HEADERS})
 target_compile_definitions(Graphics_Squelette PUBLIC _USE_MATH_DEFINES)
 
@@ -123,6 +128,7 @@ if(MINGW)
         -I${SDL2_IMAGE_INCLUDE_PATH}
         -I${GLEW_INCLUDE_PATH}
         -I${GL_INCLUDE_PATH})
+		
 
     target_link_libraries(Graphics_Squelette PUBLIC
         -lOpenGL32
@@ -156,13 +162,16 @@ elseif(MSVC)
         -I${SDL2_IMAGE_INCLUDE_PATH}
         -I${SDL2_INCLUDE_PATH}
         -I${GLEW_INCLUDE_PATH}
-        -I${GL_INCLUDE_PATH})
+        -I${GL_INCLUDE_PATH}
+		-L${SOIL2_LIBRARY_PATH}
+		-I${SOIL2_INCLUDE_PATH})
 
     target_link_libraries(Graphics_Squelette general
         "OpenGL32.lib"
         "glew32.lib"
         "SDL2.lib"
-        "SDL2main.lib")
+        "SDL2main.lib"
+		"soil2-debug.lib")
 
     #Scripts to copy to bin/
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
