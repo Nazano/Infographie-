@@ -12,6 +12,7 @@
 
 #include "Geometry.h"
 #include "logger.h"
+#include <SOIL2/SOIL2.h>
 
 #include <vector>
 
@@ -24,6 +25,7 @@ public:
 	Shape();
 	Shape(const Shape& rhs) { vertices = rhs.vertices; normals = rhs.normals; uvs = rhs.uvs; }
 	void init();
+	void load_texture(const char*, const int);
 	void show(int);
 	
 
@@ -34,7 +36,7 @@ public:
 private:
 	std::vector<glm::vec3> vertices, normals;
 	std::vector<glm::vec2> uvs;
-	GLuint vBuffer, uvBuffer;
+	GLuint vBuffer, uvBuffer, texture, textureID;
 
 };
 

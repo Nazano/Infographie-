@@ -86,8 +86,9 @@ int main(int argc, char *argv[])
 
 	auto shader = loadShader();
 
-	Objloader obj("..\\monkey.obj");
+	Objloader obj("..\\cube.obj");
 	Shape cube = obj.getShape();
+	cube.load_texture("..\\tileable-img_0062-verydark", shader->getProgramID());
 	cube.init();
 
 	auto cam = Camera(shader->getProgramID());

@@ -1,17 +1,15 @@
 #version 330
 precision mediump float;
 
-in vec3 vPosition; //Depending who compiles, these variables are not "attribute" but "in". In this version (130) both are accepted. in should be used later
-in vec3 vColor;
+layout(location = 0) in vec3 vPosition; 
+layout(location = 1) in texCoord;
 
-out vec4 varyColor; //Depending who compiles, these variables are not "varying" but "out". In this version (130) both are accepted. out should be used later
+out vec2 uvCoord;
 
-uniform float uScale;
 uniform mat4 MVP;
-//We still use varying because OpenGLES 2.0 (OpenGL Embedded System, for example for smartphones) does not accept "in" and "out"
 
 void main()
 {
-	gl_Position = MVP * vec4(vPosition, 1.0); //We need to put vPosition as a vec4. Because vPosition is a vec3, we need one more value (w) which is here 1.0. Hence x and y go from -w to w hence -1 to +1. Premultiply this variable if you want to transform the position.
-    varyColor = vec4(0.2,0.6,0.4,1);
+	gl_Position = MVP * vec4(vPosition, 1.0);
+	uvCoord = texCoord;
 }

@@ -3,9 +3,11 @@ precision mediump float; //Medium precision for float. highp and smallp can also
 
 layout(location = 0) out vec4 diffuseColor;
 
-//We still use varying because OpenGLES 2.0 (OpenGL Embedded System, for example for smartphones) does not accept "in" and "out"
+in vec2 uvCoord;
+
+uniform sampler2D Texture;
 
 void main()
 {
-   diffuseColor = vec4(0.2,0.6,0.4,1);
+   diffuseColor = texture( Texture, uvCoord).rgb;
 }
