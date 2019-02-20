@@ -86,10 +86,15 @@ int main(int argc, char *argv[])
 
 	auto shader = loadShader();
 
+	Objloader obj1("..\\torus.obj");
+	Shape torus = obj1.getShape();
+	torus.load_texture("..\\tileable-img_0062-verydark.png", shader->getProgramID());
+	torus.init(shader->getProgramID());
+
 	Objloader obj("..\\cube.obj");
 	Shape cube = obj.getShape();
-	cube.load_texture("..\\tileable-img_0062-verydark", shader->getProgramID());
-	cube.init();
+	cube.load_texture("..\\concrete.jpg", shader->getProgramID());
+	cube.init(shader->getProgramID());
 
 	auto cam = Camera(shader->getProgramID());
 	
@@ -128,7 +133,8 @@ int main(int argc, char *argv[])
 
 		glUseProgram(shader->getProgramID());
 
-		cube.show(shader->getProgramID());
+		cube.show();
+		torus.show();
 		cam.move();
 
 

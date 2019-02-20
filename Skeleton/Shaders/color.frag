@@ -1,13 +1,14 @@
 #version 330
 precision mediump float; //Medium precision for float. highp and smallp can also be used
 
-layout(location = 0) out vec4 diffuseColor;
-
 in vec2 uvCoord;
+in vec3 pos;
 
-uniform sampler2D Texture;
+out vec4 color;
+
+uniform sampler2D myTex;
 
 void main()
 {
-   diffuseColor = texture( Texture, uvCoord).rgb;
+   color = texture( myTex, uvCoord);
 }

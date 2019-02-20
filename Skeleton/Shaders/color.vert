@@ -1,10 +1,11 @@
 #version 330
 precision mediump float;
 
-layout(location = 0) in vec3 vPosition; 
-layout(location = 1) in texCoord;
+in vec3 vPosition; 
+in vec2 texCoord;
 
 out vec2 uvCoord;
+out vec3 pos;
 
 uniform mat4 MVP;
 
@@ -12,4 +13,5 @@ void main()
 {
 	gl_Position = MVP * vec4(vPosition, 1.0);
 	uvCoord = texCoord;
+	pos = vPosition;
 }

@@ -13,66 +13,67 @@ Shape::Shape() {
 
 Shape::~Shape() {
 	glDeleteBuffers(1, &vBuffer);
-	glDeleteBuffers(1, &uvBuffer);
 	glDeleteTextures(1, &texture);
 }
 
-void Shape::init() {
-	
+void Shape::init(const int programId) {
+	glGenVertexArrays(1, &vao);
 	glGenBuffers(1, &vBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	glGenBuffers(1, &uvBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
-	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_DYNAMIC_DRAW);
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, vBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3) + uvs.size() * sizeof(glm::vec2), NULL, GL_STATIC_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(glm::vec3), &vertices[0]);
+	glBufferSubData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), uvs.size() * sizeof(glm::vec2), &uvs[0]);
+	
+
+	GLuint vertIndice = glGetAttribLocation(programId, "vPosition");
+	glVertexAttribPointer(vertIndice, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (const GLvoid*)0);
+	glEnableVertexAttribArray(vertIndice);
+	
+	GLuint uvIndice = glGetAttribLocation(programId, "texCoord");
+	glVertexAttribPointer(uvIndice, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (const GLvoid*)(vertices.size() * sizeof(glm::vec3)));
+	glEnableVertexAttribArray(uvIndice);
+
+	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glDisableVertexAttribArray(vertIndice);
+	glDisableVertexAttribArray(uvIndice);
 }
 
 void Shape::load_texture(const char* tex_path, const int programID) {
+
+	int width, height;
+	auto img = SOIL_load_image(tex_path, &width, &height, 0, SOIL_LOAD_RGBA);
+	if (img == NULL)
+		ERROR("Cannot load texture: %s", tex_path);
+
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
-	int width, height;
-	auto img = SOIL_load_image(tex_path, &width, &height, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
-	SOIL_free_image_data(img);
+	if (!texture)
+		ERROR("glGenTextures error %d", texture);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color);
-
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, img);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
-	textureID = glGetUniformLocation(programID, "Texture");
+	glActiveTexture(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	SOIL_free_image_data(img);
 }
 
-void Shape::show(int programId) {
+void Shape::show() {
 
 	if (texture) {
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
-		glUniform1i(textureID, 0);
-		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vBuffer);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
+	glBindVertexArray(vao);
+	glDrawArrays(GL_TRIANGLES, 0, vertices.size()+uvs.size());
 }
