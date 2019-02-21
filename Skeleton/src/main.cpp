@@ -25,9 +25,9 @@
 #define INDICE_TO_PTR(x) ((void*)(x))
 
 
-Shader* loadShader() {
-	FILE* vertFile = fopen("bin\\Shaders\\color.vert", "r");
-	FILE* fragFile = fopen("bin\\Shaders\\color.frag", "r");
+Shader* loadShader(std::string name) {
+	FILE* vertFile = fopen(("bin\\Shaders\\" +  name + ".vert").c_str(), "r");
+	FILE* fragFile = fopen(("bin\\Shaders\\" + name + ".frag").c_str(), "r");
 
 	if (vertFile == NULL) { ERROR("Erreur vertex file"); }
 	if (fragFile == NULL) { ERROR("Erreur fragment file"); }
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 	glViewport(0, 0, WIDTH, HEIGHT); //Draw on ALL the screen
 
 	//The OpenGL background color (RGBA, each component between 0.0f and 1.0f)
-	glClearColor(0.8, 0.8, 0.8, 1.0); //Full Black
+	glClearColor(0.35, 0.67, 0.81, 1.0); //Full Black
 
 	glEnable(GL_DEPTH_TEST); //Active the depth test
 
@@ -84,21 +84,32 @@ int main(int argc, char *argv[])
 	//From here you can load your OpenGL objects, like VBO, Shaders, etc.
 	//TODO
 
-	auto shader = loadShader();
+	auto shader = loadShader("color");
 
-	Objloader obj1("..\\torus.obj");
-	Shape torus = obj1.getShape();
-	torus.load_texture("..\\tileable-img_0062-verydark.png", shader->getProgramID());
-	torus.init(shader->getProgramID());
+	
+	Objloader obj_filets("..\\filets.obj");
+	Shape filets = obj_filets.getShape();
+	filets.init(shader->getProgramID());
+	filets.load_texture("..\\net.png");
+	
 
-	Objloader obj("..\\cube.obj");
-	Shape cube = obj.getShape();
-	cube.load_texture("..\\concrete.jpg", shader->getProgramID());
-	cube.init(shader->getProgramID());
+	Objloader obj_cage("..\\cage.obj");
+	Shape cage = obj_cage.getShape();
+	cage.init(shader->getProgramID());
+	cage.load_texture("..\\cage.jpg");
+	
 
+	Objloader obj_terrain("..\\terrain.obj");
+	Shape terrain = obj_terrain.getShape();
+	terrain.init(shader->getProgramID());
+	terrain.load_texture("..\\fussballfeld_03_c.jpg");
+	
+	
 	auto cam = Camera(shader->getProgramID());
+
 	
 	bool isOpened = true;
+	auto cpt = 0.0f;
 
 	//Main application loop
 	while (isOpened)
@@ -132,11 +143,15 @@ int main(int argc, char *argv[])
 		//TODO rendering
 
 		glUseProgram(shader->getProgramID());
+		
+		filets.show();
+		terrain.show();
+		cage.show();
 
-		cube.show();
-		torus.show();
-		cam.move();
-
+		cam.move(cpt);
+		cpt += 0.1;
+	
+		glUseProgram(0);
 
 		//Display on screen (swap the buffer on screen and the buffer you are drawing on)
 		SDL_GL_SwapWindow(window);
@@ -154,6 +169,8 @@ int main(int argc, char *argv[])
 		SDL_GL_DeleteContext(context);
 	if (window != NULL)
 		SDL_DestroyWindow(window);
+
+	delete shader;
 
 	return 0;
 }

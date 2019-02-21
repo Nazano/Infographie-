@@ -13,10 +13,12 @@ Shape::Shape() {
 
 Shape::~Shape() {
 	glDeleteBuffers(1, &vBuffer);
+	glDeleteVertexArrays(1, &vao);
 	glDeleteTextures(1, &texture);
 }
 
 void Shape::init(const int programId) {
+	this->programId = programId;
 	glGenVertexArrays(1, &vao);
 	glGenBuffers(1, &vBuffer);
 
@@ -41,7 +43,7 @@ void Shape::init(const int programId) {
 	glDisableVertexAttribArray(uvIndice);
 }
 
-void Shape::load_texture(const char* tex_path, const int programID) {
+void Shape::load_texture(const char* tex_path) {
 
 	int width, height;
 	auto img = SOIL_load_image(tex_path, &width, &height, 0, SOIL_LOAD_RGBA);
@@ -68,12 +70,25 @@ void Shape::load_texture(const char* tex_path, const int programID) {
 }
 
 void Shape::show() {
-
+	glBindVertexArray(vao);
 	if (texture) {
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
 	}
 
+	glDrawArrays(GL_TRIANGLES, 0, vertices.size() + uvs.size());
+	glBindVertexArray(0);
+}
+
+void Shape::anim(float cpt) {
 	glBindVertexArray(vao);
-	glDrawArrays(GL_TRIANGLES, 0, vertices.size()+uvs.size());
+	glm::mat4 modelMatrix(1.0f); //Defines an identity matrix
+	/*
+	modelMatrix = glm::rotate(modelMatrix, cpt * (5.f / 2), glm::vec3(0.5, 0.0, 0.5)); //We rotate via an   angle = vitesse de rotation et angle, vec3(y,x, en cercle)
+	modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, -0.9f, 0.f));
+	modelMatrix = glm::scale(modelMatrix, glm::vec3(0.15f, 0.15f, 0.15f)); //And then we scale*/
+	modelMatrix = glm::rotate(modelMatrix, glm::radians(cpt), glm::vec3(1.f, 1.f, 0.f));
+
+	glUniformMatrix4fv(glGetUniformLocation(programId, "ModelMatrix"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
+	glBindVertexArray(0);
 }

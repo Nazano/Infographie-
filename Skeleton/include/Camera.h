@@ -15,11 +15,12 @@ class Camera
 public:
 	Camera(GLint);
 	~Camera();
-	void move();
+	void move(float);
 	GLuint getMatrixID() { return MatrixID; }
 
 private:
 	GLuint MatrixID;
+	int programId;
 	glm::mat4 MVP;
 };
 

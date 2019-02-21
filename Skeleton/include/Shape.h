@@ -25,9 +25,9 @@ public:
 	Shape();
 	Shape(const Shape& rhs) { vertices = rhs.vertices; normals = rhs.normals; uvs = rhs.uvs; }
 	void init(const int);
-	void load_texture(const char*, const int);
+	void load_texture(const char*);
 	void show();
-	
+	void anim(float);
 
 	std::vector<glm::vec3> getVertcies() { return vertices; }
 	std::vector<glm::vec3> getNormals() { return normals; }
@@ -37,6 +37,7 @@ private:
 	std::vector<glm::vec3> vertices, normals;
 	std::vector<glm::vec2> uvs;
 	GLuint vBuffer, vao, texture, textureID;
+	int programId;
 
 };
 
