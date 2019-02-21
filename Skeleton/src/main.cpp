@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 
 	Objloader obj_cage("..\\cage.obj");
 	Shape cage = obj_cage.getShape();
-	cage.init(shader->getProgramID(), cam.getViewMat());
+	cage.init(shader->getProgramID());
 	cage.load_texture("..\\cage.jpg");
 	
 
@@ -104,9 +104,10 @@ int main(int argc, char *argv[])
 	terrain.init(shader->getProgramID());
 	terrain.load_texture("..\\fussballfeld_03_c.jpg");
 	
-	
-	
-
+	Objloader obj_monkey("..\\monkey.obj");
+	Shape monkey = obj_monkey.getShape();
+	monkey.init(shader->getProgramID(), cam.getViewMat());
+	monkey.load_texture("..\\monkey.bmp");
 	
 	bool isOpened = true;
 	auto cpt = 0.0f;
@@ -144,12 +145,13 @@ int main(int argc, char *argv[])
 
 		glUseProgram(shader->getProgramID());
 		
-		filets.show();
+		//filets.show();
 		terrain.show();
-		cage.anim(1);
-		cage.show();
+		monkey.show();
+		//cage.show();
+		//balle.show();
 
-		//cam.move(cpt);
+		cam.move(cpt);
 		cpt += 0.1;
 	
 		glUseProgram(0);

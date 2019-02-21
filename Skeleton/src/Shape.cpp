@@ -24,7 +24,8 @@ void Shape::init(const int programId) {
 
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3) + uvs.size() * sizeof(glm::vec2), NULL, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3) + uvs.size() * sizeof(glm::vec2) + normals.size() * sizeof(glm::vec3),
+		NULL, GL_STATIC_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(glm::vec3), &vertices[0]);
 	glBufferSubData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), uvs.size() * sizeof(glm::vec2), &uvs[0]);
 	
@@ -89,8 +90,7 @@ void Shape::show() {
 }
 
 void Shape::anim(float cpt) {
-
-	 model = glm::rotate(model, glm::radians(cpt), glm::vec3(1.f, 1.f, 0.f));
+	 model = glm::rotate(model, glm::radians(cpt), glm::vec3(0.f, 1.f, 0.f));
 	 glm::mat4 MVP = projection * view * model;
 
 	glUniformMatrix4fv(matrixId , 1, GL_FALSE, glm::value_ptr(MVP));
