@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 	//TODO
 
 	auto shader = loadShader("color");
-
+	auto cam = Camera(shader->getProgramID());
 	
 	Objloader obj_filets("..\\filets.obj");
 	Shape filets = obj_filets.getShape();
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 
 	Objloader obj_cage("..\\cage.obj");
 	Shape cage = obj_cage.getShape();
-	cage.init(shader->getProgramID());
+	cage.init(shader->getProgramID(), cam.getViewMat());
 	cage.load_texture("..\\cage.jpg");
 	
 
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 	terrain.load_texture("..\\fussballfeld_03_c.jpg");
 	
 	
-	auto cam = Camera(shader->getProgramID());
+	
 
 	
 	bool isOpened = true;
@@ -146,9 +146,10 @@ int main(int argc, char *argv[])
 		
 		filets.show();
 		terrain.show();
+		cage.anim(1);
 		cage.show();
 
-		cam.move(cpt);
+		//cam.move(cpt);
 		cpt += 0.1;
 	
 		glUseProgram(0);

@@ -29,7 +29,6 @@ Objloader::Objloader(char* path) {
 		if (header == "v ") {
 			std::stringstream ss(line);
 			ss >> header >> x >> y >> z;
-			INFO("%f %f %f\n", x, y, z);
 			vertices_tmp.push_back(glm::vec3(x, y, z));
 		}
 		else if (header == "vt") {

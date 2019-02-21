@@ -25,6 +25,7 @@ public:
 	Shape();
 	Shape(const Shape& rhs) { vertices = rhs.vertices; normals = rhs.normals; uvs = rhs.uvs; }
 	void init(const int);
+	void init(const int, const glm::mat4);
 	void load_texture(const char*);
 	void show();
 	void anim(float);
@@ -36,8 +37,9 @@ public:
 private:
 	std::vector<glm::vec3> vertices, normals;
 	std::vector<glm::vec2> uvs;
-	GLuint vBuffer, vao, texture, textureID;
+	GLuint vBuffer, vao, texture, textureID, matrixId;
 	int programId;
+	glm::mat4 MVPmatrix, projection, view, model = glm::mat4(1.0f);
 
 };
 

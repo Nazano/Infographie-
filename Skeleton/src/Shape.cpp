@@ -37,10 +37,18 @@ void Shape::init(const int programId) {
 	glVertexAttribPointer(uvIndice, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (const GLvoid*)(vertices.size() * sizeof(glm::vec3)));
 	glEnableVertexAttribArray(uvIndice);
 
+	matrixId = glGetUniformLocation(programId, "ModelMatrix");
+
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glDisableVertexAttribArray(vertIndice);
 	glDisableVertexAttribArray(uvIndice);
+}
+
+void Shape::init(const int programId, const glm::mat4 matCam) {
+	projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
+	view = matCam;
+	init(programId);
 }
 
 void Shape::load_texture(const char* tex_path) {
@@ -81,14 +89,15 @@ void Shape::show() {
 }
 
 void Shape::anim(float cpt) {
-	glBindVertexArray(vao);
-	glm::mat4 modelMatrix(1.0f); //Defines an identity matrix
+
+	 model = glm::rotate(model, glm::radians(cpt), glm::vec3(1.f, 1.f, 0.f));
+	 glm::mat4 MVP = projection * view * model;
+
+	glUniformMatrix4fv(matrixId , 1, GL_FALSE, glm::value_ptr(MVP));
+	 //Defines an identity matrix
 	/*
 	modelMatrix = glm::rotate(modelMatrix, cpt * (5.f / 2), glm::vec3(0.5, 0.0, 0.5)); //We rotate via an   angle = vitesse de rotation et angle, vec3(y,x, en cercle)
 	modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, -0.9f, 0.f));
 	modelMatrix = glm::scale(modelMatrix, glm::vec3(0.15f, 0.15f, 0.15f)); //And then we scale*/
-	modelMatrix = glm::rotate(modelMatrix, glm::radians(cpt), glm::vec3(1.f, 1.f, 0.f));
 
-	glUniformMatrix4fv(glGetUniformLocation(programId, "ModelMatrix"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
-	glBindVertexArray(0);
 }
