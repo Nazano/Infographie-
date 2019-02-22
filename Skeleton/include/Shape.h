@@ -10,7 +10,6 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 
-#include "Geometry.h"
 #include "logger.h"
 #include <SOIL2/SOIL2.h>
 
