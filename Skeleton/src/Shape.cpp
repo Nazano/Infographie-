@@ -1,5 +1,7 @@
 #include "Shape.h"
 
+
+//Crée une forme à partir de ses sommets, normales et corrdonnées de texture 
 Shape::Shape(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec2> uvs) {
 
 	this->vertices = vertices;
@@ -17,6 +19,7 @@ Shape::~Shape() {
 	glDeleteTextures(1, &texture);
 }
 
+//Initialise notre forme avec un VAO et sa matrice
 void Shape::init(const int programId) {
 	this->programId = programId;
 	glGenVertexArrays(1, &vao);
@@ -24,11 +27,10 @@ void Shape::init(const int programId) {
 
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3) + uvs.size() * sizeof(glm::vec2) + normals.size() * sizeof(glm::vec3),
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3) + uvs.size() * sizeof(glm::vec2),
 		NULL, GL_STATIC_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(glm::vec3), &vertices[0]);
 	glBufferSubData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), uvs.size() * sizeof(glm::vec2), &uvs[0]);
-	
 
 	GLuint vertIndice = glGetAttribLocation(programId, "vPosition");
 	glVertexAttribPointer(vertIndice, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (const GLvoid*)0);
@@ -46,12 +48,14 @@ void Shape::init(const int programId) {
 	glDisableVertexAttribArray(uvIndice);
 }
 
+//Initalisation à utiliser lorsqu'on veut animer notre forme
 void Shape::init(const int programId, const glm::mat4 matCam) {
 	projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 	view = matCam;
 	init(programId);
 }
 
+//Charge la texture de l'objet
 void Shape::load_texture(const char* tex_path) {
 
 	int width, height;
@@ -78,6 +82,7 @@ void Shape::load_texture(const char* tex_path) {
 	SOIL_free_image_data(img);
 }
 
+//Affiche de l'objet et de sa texture
 void Shape::show() {
 	glBindVertexArray(vao);
 	if (texture) {
@@ -89,6 +94,7 @@ void Shape::show() {
 	glBindVertexArray(0);
 }
 
+//Partie animation
 void Shape::anim(float cpt) {
 	 model = glm::rotate(model, glm::radians(cpt), glm::vec3(0.f, 1.f, 0.f));
 	 glm::mat4 MVP = projection * view * model;
