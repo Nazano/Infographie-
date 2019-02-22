@@ -24,7 +24,7 @@
 #define TIME_PER_FRAME_MS  (1.0f/FRAMERATE * 1e3)
 #define INDICE_TO_PTR(x) ((void*)(x))
 
-
+//Charge le shader
 Shader* loadShader(std::string name) {
 	FILE* vertFile = fopen(("bin\\Shaders\\" +  name + ".vert").c_str(), "r");
 	FILE* fragFile = fopen(("bin\\Shaders\\" + name + ".frag").c_str(), "r");
@@ -85,7 +85,9 @@ int main(int argc, char *argv[])
 	//TODO
 
 	auto shader = loadShader("color");
-	auto cam = Camera(shader->getProgramID());
+	auto cam = Camera(shader->getProgramID()); //Initialise la vue. 
+	
+	//Chargment et initialisation des objets et de leurs textures. 
 	
 	Objloader obj_filets("..\\filets.obj");
 	Shape filets = obj_filets.getShape();
@@ -145,12 +147,16 @@ int main(int argc, char *argv[])
 
 		glUseProgram(shader->getProgramID());
 		
+		//Affichage de nos objets
+		
 		//filets.show();
 		terrain.show();
 		monkey.show();
 		//cage.show();
 		//balle.show();
-
+		
+		//rotation de la caméra
+		
 		cam.move(cpt);
 		cpt += 0.1;
 	
