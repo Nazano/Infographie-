@@ -12,7 +12,6 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Shader.h"
-#include "Cube.h"
 #include "Camera.h"
 #include "Objloader.h"
 
