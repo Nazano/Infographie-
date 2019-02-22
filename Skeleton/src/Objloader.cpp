@@ -1,5 +1,10 @@
+/*
+Permet de charger un fichier .obj et le stocker dans une instance de Shape pour être manipulé après. 
+*/
+
 #include "Objloader.h"
 
+//Découpe un string en fonction d'un délimiteur
 std::vector<std::string> split(const std::string& s, char delimiter)
 {
 	std::vector<std::string> tokens;
